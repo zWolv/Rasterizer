@@ -10,12 +10,8 @@ namespace Template
     {
         // member variables
         public Surface screen;                  // background surface for printing etc.
-        Mesh? mesh, floor;                      // a mesh to draw using OpenGL
-        float a = 0;                            // teapot rotation angle
+        Mesh? mesh, floor;                      // a mesh to draw using OpenGL                          // teapot rotation angle
         readonly Stopwatch timer = new();       // timer for measuring frame duration
-        Shader? shader;                         // shader to use for rendering
-        Shader? postproc;                       // shader to use for post processing
-        Texture? wood;                          // texture to use for rendering
         RenderTarget? target;                   // intermediate render target
         ScreenQuad? quad;                       // screen filling quad for post processing
         readonly bool useRenderTarget = true;
@@ -26,18 +22,19 @@ namespace Template
         public MyApplication(Surface screen)
         {
             this.screen = screen;
-            sceneGraph = new SceneGraph();
         }
+
         // initialize
         public void Init()
         {
+            sceneGraph = new SceneGraph();
             // load teapot
             mesh = new Mesh("../../../assets/teapot.obj");
             floor = new Mesh("../../../assets/floor.obj");
             
             
-            Matrix4 Tpot = Matrix4.CreateScale(0.5f) * Matrix4.CreateFromAxisAngle(new Vector3(0, 1, 0), a);
-            Matrix4 Tfloor = Matrix4.CreateScale(4.0f) * Matrix4.CreateFromAxisAngle(new Vector3(0, 1, 0), a);
+            Matrix4 Tpot = Matrix4.CreateScale(0.5f) * Matrix4.CreateFromAxisAngle(new Vector3(0, 1, 0), 0);
+            Matrix4 Tfloor = Matrix4.CreateScale(4.0f) * Matrix4.CreateFromAxisAngle(new Vector3(0, 1, 0), 0);
 
             floor.modelMatrix = Tfloor;
             mesh.modelMatrix = Tpot;
@@ -50,7 +47,7 @@ namespace Template
             timer.Start();
             // create the render target
             if (useRenderTarget) target = new RenderTarget(screen.width, screen.height);
-            quad = new ScreenQuad();
+                quad = new ScreenQuad();
             camera = new Camera(new Vector3(0, 14.5f, 0), new Vector3(0, 0, 1), new Vector3(1, 0, 0), new Vector3(0, 1, 0));
             camera.UpdateFrontDirection();
         }
@@ -67,8 +64,7 @@ namespace Template
         // tick for OpenGL rendering code
         public void RenderGL()
         {
-            float angle90degrees = MathF.PI / 2;
-            Matrix4 Tcamera = Matrix4.CreateTranslation(new Vector3(0, -14.5f, 0)) * Matrix4.CreateFromAxisAngle(new Vector3(1, 0, 0), angle90degrees);
+            Matrix4 Tcamera = Matrix4.LookAt(camera.position, camera.position + camera.frontDirection, camera.upDirection);
 
 
             // measure frame duration
