@@ -1,6 +1,8 @@
 using System.Diagnostics;
+using INFOGR2023TemplateP2;
 using OpenTK.Mathematics;
 using Rasterizer;
+using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Template
 {
@@ -18,6 +20,7 @@ namespace Template
         ScreenQuad? quad;                       // screen filling quad for post processing
         readonly bool useRenderTarget = true;
         SceneGraph sceneGraph;
+        Camera camera;
 
         // constructor
         public MyApplication(Surface screen)
@@ -48,6 +51,8 @@ namespace Template
             // create the render target
             if (useRenderTarget) target = new RenderTarget(screen.width, screen.height);
             quad = new ScreenQuad();
+            camera = new Camera(new Vector3(0, 14.5f, 0), new Vector3(0, 0, 1), new Vector3(1, 0, 0), new Vector3(0, 1, 0));
+            camera.UpdateFrontDirection();
         }
 
         // tick for background surface
@@ -55,6 +60,8 @@ namespace Template
         {
             screen.Clear(0);
             //screen.Print("hello world", 2, 2, 0xffff00);
+
+            KeyboardInput(OpenTKApp.keyboard);
         }
 
         // tick for OpenGL rendering code
@@ -92,6 +99,57 @@ namespace Template
                 {
                     sceneGraph.Render(Tcamera);
                 }
+            }
+        }
+
+        public void KeyboardInput(KeyboardState keyboard)
+        {
+            if (keyboard[Keys.E])
+                camera.position += camera.upDirection;
+            if (keyboard[Keys.Q])
+                camera.position -= camera.upDirection;
+            if (keyboard[Keys.W])
+                camera.position += camera.frontDirection;
+            if (keyboard[Keys.S])
+                camera.position -= camera.frontDirection;
+            if (keyboard[Keys.A])
+                camera.position += camera.rightDirection;
+            if (keyboard[Keys.D])
+                camera.position -= camera.rightDirection;
+
+            if (keyboard[Keys.Up])
+            {
+                camera.pitch++;
+                if (camera.pitch > 89.0f)
+                {
+                    camera.pitch = 89.0f;
+                }
+                camera.UpdateFrontDirection();
+                camera.UpdateUpDirection();
+            }
+            if (keyboard[Keys.Down])
+            {
+                camera.pitch--;
+                if (camera.pitch < -89.0f)
+                {
+                    camera.pitch = -89.0f;
+                }
+                camera.UpdateFrontDirection();
+                camera.UpdateUpDirection();
+            }
+            if (keyboard[Keys.Left])
+            {
+                camera.yaw++;
+                camera.UpdateFrontDirection();
+                camera.UpdateRightDirection();
+                camera.UpdateUpDirection();
+            }
+            if (keyboard[Keys.Right])
+            {
+                camera.yaw--;
+                camera.UpdateFrontDirection();
+                camera.UpdateRightDirection();
+                camera.UpdateUpDirection();
             }
         }
     }

@@ -35,6 +35,8 @@ namespace Template
         ScreenQuad quad;
         Shader screenShader;
 
+        internal static KeyboardState keyboard;
+
         public OpenTKApp()
             : base(GameWindowSettings.Default, new NativeWindowSettings()
             {
@@ -87,7 +89,7 @@ namespace Template
         {
             base.OnUpdateFrame(e);
             // called once per frame; app logic
-            var keyboard = KeyboardState;
+            keyboard = KeyboardState;
             if (keyboard[Keys.Escape]) terminated = true;
         }
         protected override void OnRenderFrame(FrameEventArgs e)
