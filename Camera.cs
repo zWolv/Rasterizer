@@ -1,16 +1,11 @@
 ﻿using OpenTK.Mathematics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace INFOGR2023TemplateP2
+namespace Rasterizer
 {
     public class Camera
     {
         public Vector3 position, frontDirection, rightDirection, upDirection;
-        public float pitch = 0, yaw = 180;
+        public float pitch = 0, yaw = 90;
 
         public Camera(Vector3 position, Vector3 frontDirection, Vector3 rightDirection, Vector3 upDirection) 
         {
