@@ -47,7 +47,7 @@ namespace Template
             // create the render target
             if (useRenderTarget) target = new RenderTarget(screen.width, screen.height);
                 quad = new ScreenQuad();
-            camera = new Camera(new Vector3(0, 14.5f, 0), new Vector3(0, 0, 1), new Vector3(1, 0, 0), new Vector3(0, 1, 0));
+            camera = new Camera(new Vector3(0, 3, -14.5f), new Vector3(0, 0, 1), new Vector3(1, 0, 0), new Vector3(0, 1, 0));
             camera.UpdateFrontDirection();
         }
 
@@ -64,8 +64,8 @@ namespace Template
         public void RenderGL()
         {
             float angle90degrees = MathF.PI / 2;
-            Matrix4 Ccamera = Matrix4.LookAt(camera.position, camera.position + camera.frontDirection, camera.upDirection);
-            Matrix4 Tcamera = Matrix4.CreateTranslation(new Vector3(0, -14.5f, 0)) * Matrix4.CreateFromAxisAngle(new Vector3(1, 0, 0), angle90degrees);
+            //Matrix4 Tcamera = Matrix4.CreateTranslation(camera.position) * Matrix4.CreateFromAxisAngle(camera.frontDirection, MathHelper.DegreesToRadians(camera.pitch));
+            Matrix4 Tcamera = Matrix4.LookAt(camera.position, camera.position + camera.frontDirection, camera.upDirection);
 
             // measure frame duration
             float frameDuration = timer.ElapsedMilliseconds;
