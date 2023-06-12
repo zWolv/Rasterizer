@@ -5,7 +5,7 @@ namespace Rasterizer
     public class Camera
     {
         public Vector3 position, frontDirection, rightDirection, upDirection;
-        public float pitch = 0, yaw = 90;
+        public float pitch = 0, yaw = 180;
 
         public Camera(Vector3 position, Vector3 frontDirection, Vector3 rightDirection, Vector3 upDirection) 
         {
