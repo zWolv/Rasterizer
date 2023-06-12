@@ -15,6 +15,8 @@ namespace Template
         int vertexBufferId;                     // vertex buffer
         int triangleBufferId;                   // triangle buffer
         int quadBufferId;                       // quad buffer (not in Modern OpenGL)
+        public Matrix4 modelMatrix;
+        public Matrix4 relativeModelMatrix;
 
         // constructor
         public Mesh(string fileName)
