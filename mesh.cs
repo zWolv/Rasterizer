@@ -1,12 +1,13 @@
 ﻿using System.Runtime.InteropServices;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
+using Rasterizer;
 
 namespace Template
 {
     // mesh and loader based on work by JTalton; http://www.opentk.com/node/642
 
-    public class Mesh
+    public class Mesh : WorldObject
     {
         // data members
         public ObjVertex[]? vertices;            // vertex positions, model space
@@ -18,11 +19,16 @@ namespace Template
         public Matrix4 modelMatrix;
         public Matrix4 relativeModelMatrix;
 
+        // temp fix
+        private float light = (float)50 / 255;
+        private Vector4 ambientLight;
+
         // constructor
         public Mesh(string fileName)
         {
             MeshLoader loader = new();
             loader.Load(this, fileName);
+            ambientLight = new Vector4(light, light, light, 1);
         }
 
         // initialization; called during first render
@@ -67,6 +73,10 @@ namespace Template
 
             // pass transform to vertex shader
             GL.UniformMatrix4(shader.uniform_mview, false, ref transform);
+            GL.Uniform4(shader.uniform_ambientLight, ref ambientLight);
+            GL.UniformMatrix4(shader.uniform_mworld, false, ref modelMatrix);
+            GL.Uniform3(shader.uniform_lightColor, ref MyApplication.lightData[0]);
+            GL.Uniform3(shader.uniform_lightPosition, ref MyApplication.lightData[1]);
 
             // enable position, normal and uv attributes
             GL.EnableVertexAttribArray(shader.attribute_vpos);

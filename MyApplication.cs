@@ -1,7 +1,10 @@
 using System.Diagnostics;
+using System.Numerics;
+using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using Rasterizer;
 using OpenTK.Windowing.GraphicsLibraryFramework;
+using Vector3 = OpenTK.Mathematics.Vector3;
 
 namespace Template
 {
@@ -16,6 +19,7 @@ namespace Template
         readonly bool useRenderTarget = true;
         SceneGraph sceneGraph;
         Camera camera;
+        public static Vector3[] lightData;
 
         // constructor
         public MyApplication(Surface screen)
@@ -31,6 +35,7 @@ namespace Template
             mesh = new Mesh("../../../assets/teapot.obj");
             floor = new Mesh("../../../assets/floor.obj");
             
+            lightData = new Vector3[2];
             
             Matrix4 Tpot = Matrix4.CreateScale(0.5f) * Matrix4.CreateFromAxisAngle(new Vector3(0, 1, 0), 0);
             Matrix4 Tfloor = Matrix4.CreateScale(4.0f) * Matrix4.CreateFromAxisAngle(new Vector3(0, 1, 0), 0);
@@ -38,8 +43,13 @@ namespace Template
             floor.modelMatrix = Tfloor;
             mesh.modelMatrix = Tpot;
 
-            sceneGraph.AddMeshToWorld(mesh);
-            sceneGraph.AddMeshToWorld(floor);
+            sceneGraph.AddWorldObject(mesh);
+            sceneGraph.AddWorldObject(floor);
+            Vector3 pos = new Vector3(5, 1, 0);
+            Vector3 intensity = new Vector3(1, 1, 1);
+            sceneGraph.AddWorldObject(new Light(pos, intensity));
+            lightData[0] = pos;
+            lightData[1] = intensity;
 
             // initialize stopwatch
             timer.Reset();

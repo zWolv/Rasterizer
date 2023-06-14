@@ -22,18 +22,18 @@ namespace Rasterizer
             postProcess = new Shader("../../../shaders/vs_post.glsl", "../../../shaders/fs_post.glsl"); ;
         }
 
-        public void AddMeshToWorld(Mesh mesh)
+        public void AddWorldObject(WorldObject mesh)
         {
             world.AddChild(mesh);
         }
 
-        public void AddMeshToMesh(Mesh mesh, Mesh parent)
+        public void AddWorldObjectToObject(WorldObject mesh, WorldObject parent)
         {
             var parentNode = FindMeshNode(parent);
             parentNode.AddChild(mesh);
         }
 
-        Node FindMeshNode(Mesh mesh, Node next = null!)
+        Node FindMeshNode(WorldObject mesh, Node next = null!)
         {
             if (world.Children.Count != 0 && next == null)
             {
@@ -80,20 +80,21 @@ namespace Rasterizer
 
         public void ProcessNode(Matrix4 camera, Node node)
         {
-            // render the mesh
-            Mesh mesh = node.Data;
-            if(node.Parent != null)
+            // render the mesh if the node contains a mesh. Lights don't need to be rendered.
+            if (node.Data is Light)
             {
-                //translocate the the mesh to be relative to the parent mesh
-                //mesh.modelMatrix *= ;
+                return;
             }
+
+            Mesh? mesh = node.Data as Mesh;
             Matrix4 view = Matrix4.CreatePerspectiveFieldOfView(1.2f, 1.3f, .1f, 1000);
-            Matrix4 transform = mesh.modelMatrix * camera * view;
+            Matrix4 transform = //mesh.relativeModelMatrix * 
+                mesh.modelMatrix * camera * view;
 
             mesh?.Render(shader, transform, wood);
 
-            if(node.Children.Count == 0)
-            {
+            if (node.Children.Count == 0)
+            { 
                 return;
             }
             node.Children.ForEach(child => { ProcessNode(camera, child); });
@@ -108,25 +109,29 @@ namespace Rasterizer
     {
         private Node parent;
         public Node Parent { get { return parent; } }
-        private Mesh data;
+        private WorldObject data;
 
-        public Mesh Data { get { return data; } }
+        public WorldObject Data { get { return data; } }
 
         private List<Node> children = new List<Node>();
 
         public List<Node> Children { get { return children; } }
 
-        public Node(Mesh data, Node parent = null!)
+        public Node(WorldObject data, Node parent = null!)
         {
             this.parent = parent;
             this.data = data;
         }
 
-        public void AddChild(Mesh mesh)
+        public void AddChild(WorldObject mesh)
         {
             var node = new Node(mesh, this);
             children.Add(node);
-            node.Data.relativeModelMatrix = node.CalculateRelativeModelMatrix();
+            if (node.Data is Mesh q)
+            {
+                q.relativeModelMatrix = node.CalculateRelativeModelMatrix();
+            }
+            
         }
 
         public Matrix4 CalculateRelativeModelMatrix()
@@ -136,7 +141,8 @@ namespace Rasterizer
             Node above = parent;
             while(above != null && above.Data != null)
             {
-                parentMatrices.Add(above.Data.modelMatrix);
+                Mesh? mesh = above.Data as Mesh;
+                parentMatrices.Add(mesh.modelMatrix);
                 above = above.parent;
             }
             for(int i = parentMatrices.Count - 1; i >= 0;i--)
@@ -150,9 +156,10 @@ namespace Rasterizer
                     result *= parentMatrices[i];
                 }
             }
-            return result * Data.modelMatrix;
+
+            Mesh? q = Data as Mesh;
+
+            return result * q.modelMatrix;
         }
-
-
     }
 }
