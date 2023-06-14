@@ -131,14 +131,26 @@ namespace Rasterizer
 
         public Matrix4 CalculateRelativeModelMatrix()
         {
-            Matrix4 result = Data.modelMatrix;
+            Matrix4 result = Matrix4.Identity;
+            List<Matrix4> parentMatrices = new List<Matrix4>();
             Node above = parent;
             while(above != null && above.Data != null)
             {
-                result *= parent.Data.modelMatrix;
+                parentMatrices.Add(above.Data.modelMatrix);
                 above = above.parent;
             }
-            return result;
+            for(int i = parentMatrices.Count - 1; i >= 0;i--)
+            {
+                if(result == Matrix4.Identity)
+                {
+                    result = parentMatrices[i];
+                }
+                else
+                {
+                    result *= parentMatrices[i];
+                }
+            }
+            return result * Data.modelMatrix;
         }
 
 
