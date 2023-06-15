@@ -46,7 +46,7 @@ namespace Template
             sceneGraph.AddWorldObject(mesh);
             sceneGraph.AddWorldObject(floor);
             Vector3 pos = new Vector3(0, 4, 5);
-            Vector3 intensity = new Vector3(2, 2, 2);
+            Vector3 intensity = new Vector3(255, 255, 255);
             sceneGraph.AddWorldObject(new Light(pos, intensity));
             lightData[0] = pos;
             lightData[1] = intensity;

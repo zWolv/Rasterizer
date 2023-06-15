@@ -13,7 +13,7 @@ namespace Rasterizer
         public Light(Vector3 position, Vector3 intensity)
         {
             Position = position;
-            Intensity = intensity;
+            Intensity = intensity / 255;
         }
     }
 }

@@ -75,8 +75,9 @@ namespace Template
             GL.UniformMatrix4(shader.uniform_mview, false, ref transform);
             //GL.Uniform4(shader.uniform_ambientLight, ambientLight);
             GL.UniformMatrix4(shader.uniform_mworld, false, ref objectToWorld);
-            GL.Uniform3(shader.uniform_lightColor, MyApplication.lightData[0]);
-            GL.Uniform3(shader.uniform_lightPosition, MyApplication.lightData[1]);
+            GL.Uniform3(shader.uniform_lightPosition, MyApplication.lightData[0]);
+            GL.Uniform3(shader.uniform_lightColor, MyApplication.lightData[1]);
+            
 
             // enable position, normal and uv attributes
             GL.EnableVertexAttribArray(shader.attribute_vpos);
