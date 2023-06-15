@@ -17,7 +17,7 @@ namespace Template
         int triangleBufferId;                   // triangle buffer
         int quadBufferId;                       // quad buffer (not in Modern OpenGL)
         public Matrix4 modelMatrix;
-        public Matrix4 relativeModelMatrix;
+        public Matrix4 objectToWorld;
 
         // temp fix
         private float light = (float)50 / 255;
@@ -73,10 +73,10 @@ namespace Template
 
             // pass transform to vertex shader
             GL.UniformMatrix4(shader.uniform_mview, false, ref transform);
-            GL.Uniform4(shader.uniform_ambientLight, ref ambientLight);
-            GL.UniformMatrix4(shader.uniform_mworld, false, ref modelMatrix);
-            GL.Uniform3(shader.uniform_lightColor, ref MyApplication.lightData[0]);
-            GL.Uniform3(shader.uniform_lightPosition, ref MyApplication.lightData[1]);
+            //GL.Uniform4(shader.uniform_ambientLight, ambientLight);
+            GL.UniformMatrix4(shader.uniform_mworld, false, ref objectToWorld);
+            GL.Uniform3(shader.uniform_lightColor, MyApplication.lightData[0]);
+            GL.Uniform3(shader.uniform_lightPosition, MyApplication.lightData[1]);
 
             // enable position, normal and uv attributes
             GL.EnableVertexAttribArray(shader.attribute_vpos);

@@ -66,11 +66,11 @@ namespace Rasterizer
             return null!;
         }
 
-        public void Render(Matrix4 camera)
+        public void Render(Matrix4 worldToScreen)
         {
             if(world.Children.Count != 0) 
             {
-                world.Children.ForEach(child => { ProcessNode(camera, child); });
+                world.Children.ForEach(child => { ProcessNode(worldToScreen, child); });
             }
             else
             {
@@ -78,7 +78,7 @@ namespace Rasterizer
             }
         }
 
-        public void ProcessNode(Matrix4 camera, Node node)
+        public void ProcessNode(Matrix4 worldToScreen, Node node)
         {
             // render the mesh if the node contains a mesh. Lights don't need to be rendered.
             if (node.Data is Light)
@@ -88,8 +88,7 @@ namespace Rasterizer
 
             Mesh? mesh = node.Data as Mesh;
             Matrix4 view = Matrix4.CreatePerspectiveFieldOfView(1.2f, 1.3f, .1f, 1000);
-            Matrix4 transform = //mesh.relativeModelMatrix * 
-                mesh.modelMatrix * camera * view;
+            Matrix4 transform = mesh.objectToWorld * worldToScreen * view;
 
             mesh?.Render(shader, transform, wood);
 
@@ -97,7 +96,7 @@ namespace Rasterizer
             { 
                 return;
             }
-            node.Children.ForEach(child => { ProcessNode(camera, child); });
+            node.Children.ForEach(child => { ProcessNode(worldToScreen, child); });
         }
     }
 
@@ -129,7 +128,7 @@ namespace Rasterizer
             children.Add(node);
             if (node.Data is Mesh q)
             {
-                q.relativeModelMatrix = node.CalculateRelativeModelMatrix();
+                q.objectToWorld = node.CalculateRelativeModelMatrix();
             }
             
         }

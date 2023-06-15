@@ -22,6 +22,7 @@ void main()
 	position = objectToWorld * vec4(vPosition, 1.0f);
 
 	// forward normal and uv coordinate; will be interpolated over triangle
+	// change to objectToScreen to get template vertex shading
 	normal = objectToWorld * vec4( vNormal, 0.0f );
 	uv = vUV;
 }
