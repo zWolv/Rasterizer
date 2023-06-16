@@ -73,8 +73,6 @@ namespace Template
         // tick for OpenGL rendering code
         public void RenderGL()
         {
-            float angle90degrees = MathF.PI / 2;
-            //Matrix4 Tcamera = Matrix4.CreateTranslation(camera.position) * Matrix4.CreateFromAxisAngle(camera.frontDirection, MathHelper.DegreesToRadians(camera.pitch));
             Matrix4 Tcamera = Matrix4.LookAt(camera.position, camera.position + camera.frontDirection, camera.upDirection);
 
             // measure frame duration
