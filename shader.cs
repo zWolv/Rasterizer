@@ -16,6 +16,7 @@ namespace Template
         public int uniform_mworld;
         public int uniform_lightColor;
         public int uniform_lightPosition;
+        public int uniform_camPosition;
 
         // constructor
         public Shader(String vertexShader, String fragmentShader)
@@ -36,6 +37,7 @@ namespace Template
             uniform_mworld = GL.GetUniformLocation(programID, "objectToWorld");
             uniform_lightColor = GL.GetUniformLocation(programID, "lightColor");
             uniform_lightPosition = GL.GetUniformLocation(programID, "lightPosition");
+            uniform_camPosition = GL.GetUniformLocation(programID, "cameraPosition");
         }
 
         // loading shaders

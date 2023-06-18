@@ -88,7 +88,7 @@ namespace Template
                 // render scene to render target
                 if (sceneGraph.Shader != null && sceneGraph.Wood != null)
                 {
-                    sceneGraph.Render(Tcamera);
+                    sceneGraph.Render(Tcamera, camera);
                 }
 
                 // render quad
@@ -101,7 +101,7 @@ namespace Template
                 // render scene directly to the screen
                 if (sceneGraph.Shader != null && sceneGraph.Wood != null)
                 {
-                    sceneGraph.Render(Tcamera);
+                    sceneGraph.Render(Tcamera, camera);
                 }
             }
         }
