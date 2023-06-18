@@ -20,15 +20,15 @@ namespace Template
         public Matrix4 objectToWorld;
 
         // temp fix
-        private float light = (float)50 / 255;
-        private Vector4 ambientLight;
+        private float light = (float)30 / 255;
+        private Vector3 ambientLight;
 
         // constructor
         public Mesh(string fileName)
         {
             MeshLoader loader = new();
             loader.Load(this, fileName);
-            ambientLight = new Vector4(light, light, light, 1);
+            ambientLight = new Vector3(light, light, light);
         }
 
         // initialization; called during first render
@@ -57,7 +57,7 @@ namespace Template
         }
 
         // render the mesh using the supplied shader and matrix
-        public void Render(Shader shader, Matrix4 transform, Texture texture)
+        public void Render(Shader shader, Matrix4 transform, Texture texture, Camera camera)
         {
             // on first run, prepare buffers
             Prepare();
@@ -73,10 +73,11 @@ namespace Template
 
             // pass transform to vertex shader
             GL.UniformMatrix4(shader.uniform_mview, false, ref transform);
-            //GL.Uniform4(shader.uniform_ambientLight, ambientLight);
+            //GL.Uniform3(shader.uniform_ambientLight, ref ambientLight);
             GL.UniformMatrix4(shader.uniform_mworld, false, ref objectToWorld);
             GL.Uniform3(shader.uniform_lightPosition, MyApplication.lightData[0]);
             GL.Uniform3(shader.uniform_lightColor, MyApplication.lightData[1]);
+            GL.Uniform3(shader.uniform_camPosition, camera.position);
             
 
             // enable position, normal and uv attributes
