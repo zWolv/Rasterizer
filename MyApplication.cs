@@ -94,7 +94,7 @@ namespace Template
                 // render quad
                 target.Unbind();
                 if (sceneGraph.PostProcess != null)
-                    quad.Render(sceneGraph.PostProcess, target.GetTextureID());
+                    quad.Render(sceneGraph.PostProcess, target.GetTextureID(), sceneGraph.LUT.id);
             }
             else
             {
@@ -123,7 +123,7 @@ namespace Template
 
             if (keyboard[Keys.Up])
             {
-                camera.pitch++;
+                camera.pitch += 2;
                 if (camera.pitch > 89.0f)
                 {
                     camera.pitch = 89.0f;
@@ -133,7 +133,7 @@ namespace Template
             }
             if (keyboard[Keys.Down])
             {
-                camera.pitch--;
+                camera.pitch -= 2;
                 if (camera.pitch < -89.0f)
                 {
                     camera.pitch = -89.0f;
@@ -143,18 +143,39 @@ namespace Template
             }
             if (keyboard[Keys.Left])
             {
-                camera.yaw++;
+                camera.yaw += 2;
                 camera.UpdateFrontDirection();
                 camera.UpdateRightDirection();
                 camera.UpdateUpDirection();
             }
             if (keyboard[Keys.Right])
             {
-                camera.yaw--;
+                camera.yaw -= 2;
                 camera.UpdateFrontDirection();
                 camera.UpdateRightDirection();
                 camera.UpdateUpDirection();
             }
+
+            if (keyboard[Keys.F1])
+                sceneGraph.LUT = new Texture("../../../assets/luts/lut0.png");
+            if (keyboard[Keys.F2])
+                sceneGraph.LUT = new Texture("../../../assets/luts/lut1.png");
+            if (keyboard[Keys.F3])
+                sceneGraph.LUT = new Texture("../../../assets/luts/lut2.png");
+            if (keyboard[Keys.F4])
+                sceneGraph.LUT = new Texture("../../../assets/luts/lut3.png");
+            if (keyboard[Keys.F5])
+                sceneGraph.LUT = new Texture("../../../assets/luts/lut4.png");
+            if (keyboard[Keys.F6])
+                sceneGraph.LUT = new Texture("../../../assets/luts/lut5.png");
+            if (keyboard[Keys.F7])
+                sceneGraph.LUT = new Texture("../../../assets/luts/lut6.png");
+            if (keyboard[Keys.F8])
+                sceneGraph.LUT = new Texture("../../../assets/luts/lut7.png");
+            if (keyboard[Keys.F9])
+                sceneGraph.LUT = new Texture("../../../assets/luts/lut8.png");
+            if (keyboard[Keys.F10])
+                sceneGraph.LUT = new Texture("../../../assets/luts/lut9.png");
         }
     }
 }

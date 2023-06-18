@@ -40,7 +40,7 @@ namespace Template
         }
 
         // render the mesh using the supplied shader and matrix
-        public void Render(Shader shader, int textureID)
+        public void Render(Shader shader, int textureID, int lut = 0)
         {
             // on first run, prepare buffers
             Prepare(shader);
@@ -50,10 +50,15 @@ namespace Template
 
             // enable texture
             int texLoc = GL.GetUniformLocation(shader.programID, "pixels");
+            int texLoc2 = GL.GetUniformLocation(shader.programID, "lut");
             GL.UseProgram(shader.programID);
-            GL.Uniform1(texLoc, 0);
+            int textureUnitIndex = 0;
+            GL.Uniform1(texLoc, textureUnitIndex);
             GL.ActiveTexture(TextureUnit.Texture0);
             GL.BindTexture(TextureTarget.Texture2D, textureID);
+            GL.Uniform1(texLoc2, 1);
+            GL.ActiveTexture(TextureUnit.Texture1);
+            GL.BindTexture(TextureTarget.Texture2D, lut);
 
             // enable position and uv attributes
             GL.EnableVertexAttribArray(shader.attribute_vpos);

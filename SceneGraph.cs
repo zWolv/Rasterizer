@@ -9,17 +9,20 @@ namespace Rasterizer
         Shader shader;
         Texture wood;
         Shader postProcess;
+        Texture lut;
 
         public Shader Shader { get { return shader; } }
         public Texture Wood { get { return wood; } }
         public Shader PostProcess { get { return postProcess; } }
+        public Texture LUT { get { return lut; } set { lut = value; } }
 
         public SceneGraph()
         {
             world = new Node(null!);
             shader = new Shader("../../../shaders/vs.glsl", "../../../shaders/fs.glsl");
             wood = new Texture("../../../assets/wood.jpg");
-            postProcess = new Shader("../../../shaders/vs_post.glsl", "../../../shaders/fs_post.glsl"); ;
+            postProcess = new Shader("../../../shaders/vs_post.glsl", "../../../shaders/fs_post.glsl");
+            lut = new Texture("../../../assets/luts/lut0.png");
         }
 
         public void AddWorldObject(WorldObject mesh)
