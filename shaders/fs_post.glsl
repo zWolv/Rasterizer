@@ -107,12 +107,7 @@ void ColorGradingApply()
 
 void FindSizes(float textureSize)
 {
-    if (textureSize == 8)
-    {
-        size = 4;
-        sizeRoot = 2;
-    }
-    else if (textureSize == 64)
+    if (textureSize == 64)
     {
         size = 16;
         sizeRoot = 4;
