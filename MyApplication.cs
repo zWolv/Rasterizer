@@ -32,7 +32,7 @@ namespace Template
             sceneGraph = new SceneGraph();
             this.screen = screen;
             lightData = new Light[4];
-            camera = new Camera(new Vector3(0, 3, -14.5f), new Vector3(0, 0, 1), new Vector3(1, 0, 0), new Vector3(0, 1, 0));
+            camera = new Camera(new Vector3(0, 3, -14.5f), new Vector3(2, 1, 3), new Vector3(1, 0, 0), new Vector3(0, 1, 0));
         }
 
         // initialize

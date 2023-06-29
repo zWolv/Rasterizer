@@ -9,10 +9,16 @@ namespace Rasterizer
 
         public Camera(Vector3 position, Vector3 frontDirection, Vector3 rightDirection, Vector3 upDirection) 
         {
+            frontDirection.Normalize();
+            rightDirection.Normalize();
+            upDirection.Normalize();
+
             this.position = position;
             this.frontDirection = frontDirection;
             this.rightDirection = rightDirection;
             this.upDirection = upDirection;
+            
+            CalculateNewPitchYaw();
         }
 
         public void UpdateFrontDirection()
@@ -35,6 +41,14 @@ namespace Rasterizer
         {
             upDirection = Vector3.Cross(frontDirection, rightDirection);
             upDirection.Normalize();
+        }
+
+        internal void CalculateNewPitchYaw()
+        {
+            pitch = (float)MathHelper.RadiansToDegrees(Math.Asin(frontDirection.Y));
+            double tempX = frontDirection.X / Math.Cos(MathHelper.DegreesToRadians(pitch));
+            double tempZ = frontDirection.Z / Math.Cos(MathHelper.DegreesToRadians(pitch));
+            yaw = (float)MathHelper.RadiansToDegrees(Math.Atan2(tempX, tempZ)) + 180f;
         }
     }
 }

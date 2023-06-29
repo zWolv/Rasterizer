@@ -8,7 +8,8 @@ uniform sampler2D lut;          // look up table texture
 void vignetteEffect(), BlurEffect(float sigma, int kernelWidth); // different post processing effects
 void FindSizes(float textureSize);
 vec4 ColorGradingApply(vec2 uv), chromaticAberrationEffect(vec2 uv), BlurPixel(float middleComponent, vec2 uv, float uvComponent, float sigma);
-bool vignette = true, chromaticAberration = false, blur = false, colorGrading = true;
+bool vignette = true, chromaticAberration = false, blur = false, colorGrading = false;
+float variableKernelWidth = 2.0;
 layout(location = 0) out vec4 fragColor;
 
 float size, sizeRoot;
@@ -30,7 +31,7 @@ void main()
         outputColor = chromaticAberrationEffect(uv).rgb;
 
     if (blur)
-        BlurEffect(2.0, 1);
+        BlurEffect(variableKernelWidth, 1);
     
     if (vignette)
         vignetteEffect();
