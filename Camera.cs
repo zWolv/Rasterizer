@@ -19,6 +19,8 @@ namespace Rasterizer
             this.upDirection = upDirection;
             
             CalculateNewPitchYaw();
+            UpdateRightDirection();
+            UpdateUpDirection();
         }
 
         public void UpdateFrontDirection()

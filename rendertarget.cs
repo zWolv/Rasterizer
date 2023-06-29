@@ -9,8 +9,8 @@ namespace Template
         uint fbo;
         int colorTexture;
         uint depthBuffer;
-        int width, height;
-        public RenderTarget(int screenWidth, int screenHeight)
+        public int width, height;
+        public RenderTarget(int screenWidth, int screenHeight, bool HDRGlow = false)
         {
             width = screenWidth;
             height = screenHeight;
@@ -21,7 +21,7 @@ namespace Template
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
-            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba8, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, IntPtr.Zero);
+            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba8, width, height, 0, PixelFormat.Rgba, PixelType.Byte, IntPtr.Zero);
             GL.BindTexture(TextureTarget.Texture2D, 0);
             // bind color and depth textures to fbo
             GL.Ext.GenFramebuffers(1, out fbo);

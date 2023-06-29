@@ -62,7 +62,7 @@ namespace Template
             // create the render target
             if (useRenderTarget) target = new RenderTarget(screen.width, screen.height);
                 quad = new ScreenQuad();
-                camera.UpdateFrontDirection();
+            camera.UpdateFrontDirection();
         }
 
         // tick for background surface
@@ -72,6 +72,9 @@ namespace Template
             //screen.Print("hello world", 2, 2, 0xffff00);
 
             KeyboardInput(OpenTKApp.keyboard);
+            screen = OpenTKApp.screen;
+            if (useRenderTarget) 
+                target = new RenderTarget(screen.width, screen.height);
         }
 
         // tick for OpenGL rendering code

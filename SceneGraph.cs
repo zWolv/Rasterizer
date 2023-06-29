@@ -90,7 +90,7 @@ namespace Rasterizer
             }
 
             Mesh? mesh = node.Data as Mesh;
-            Matrix4 view = Matrix4.CreatePerspectiveFieldOfView(1.2f, 1.3f, .1f, 1000);
+            Matrix4 view = Matrix4.CreatePerspectiveFieldOfView(1.2f, (float)OpenTKApp.screen.width/(float)OpenTKApp.screen.height, .1f, 1000);
             Matrix4 transform = mesh.objectToWorld * worldToScreen * view;
 
             mesh?.Render(shader, transform, wood, camera);
