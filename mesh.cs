@@ -19,16 +19,11 @@ namespace Template
         public Matrix4 modelMatrix;
         public Matrix4 objectToWorld;
 
-        // temp fix
-        private float light = (float)30 / 255;
-        private Vector3 ambientLight;
-
         // constructor
         public Mesh(string fileName)
         {
             MeshLoader loader = new();
             loader.Load(this, fileName);
-            ambientLight = new Vector3(light, light, light);
         }
 
         // initialization; called during first render
@@ -73,10 +68,16 @@ namespace Template
 
             // pass transform to vertex shader
             GL.UniformMatrix4(shader.uniform_mview, false, ref transform);
-            //GL.Uniform3(shader.uniform_ambientLight, ref ambientLight);
+            GL.Uniform3(shader.uniform_ambientLight, ref MyApplication.ambientLight);
             GL.UniformMatrix4(shader.uniform_mworld, false, ref objectToWorld);
-            GL.Uniform3(shader.uniform_lightPosition, MyApplication.lightData[0]);
-            GL.Uniform3(shader.uniform_lightColor, MyApplication.lightData[1]);
+            GL.Uniform3(shader.uniform_lightPosition0, MyApplication.lightData[0].Position);
+            GL.Uniform3(shader.uniform_lightColor0, MyApplication.lightData[0].Intensity);
+            GL.Uniform3(shader.uniform_lightPosition1, MyApplication.lightData[1].Position);
+            GL.Uniform3(shader.uniform_lightColor1, MyApplication.lightData[1].Intensity);
+            GL.Uniform3(shader.uniform_lightPosition2, MyApplication.lightData[2].Position);
+            GL.Uniform3(shader.uniform_lightColor2, MyApplication.lightData[2].Intensity);
+            GL.Uniform3(shader.uniform_lightPosition3, MyApplication.lightData[3].Position);
+            GL.Uniform3(shader.uniform_lightColor3, MyApplication.lightData[3].Intensity);
             GL.Uniform3(shader.uniform_camPosition, camera.position);
             
 

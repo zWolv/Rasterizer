@@ -14,9 +14,15 @@ namespace Template
         public int uniform_mview;
         public int uniform_ambientLight;
         public int uniform_mworld;
-        public int uniform_lightColor;
-        public int uniform_lightPosition;
+        public int uniform_lightColor0;
+        public int uniform_lightPosition0;
         public int uniform_camPosition;
+        public int uniform_lightColor1;
+        public int uniform_lightColor2;
+        public int uniform_lightColor3;
+        public int uniform_lightPosition1;
+        public int uniform_lightPosition2;
+        public int uniform_lightPosition3;
 
         // constructor
         public Shader(String vertexShader, String fragmentShader)
@@ -35,8 +41,14 @@ namespace Template
             uniform_mview = GL.GetUniformLocation(programID, "objectToScreen");
             uniform_ambientLight = GL.GetUniformLocation(programID, "ambientLight");
             uniform_mworld = GL.GetUniformLocation(programID, "objectToWorld");
-            uniform_lightColor = GL.GetUniformLocation(programID, "lightColor");
-            uniform_lightPosition = GL.GetUniformLocation(programID, "lightPosition");
+            uniform_lightColor0 = GL.GetUniformLocation(programID, "lightColor0");
+            uniform_lightColor1 = GL.GetUniformLocation(programID, "lightColor1");
+            uniform_lightColor2 = GL.GetUniformLocation(programID, "lightColor2");
+            uniform_lightColor3 = GL.GetUniformLocation(programID, "lightColor3");
+            uniform_lightPosition0 = GL.GetUniformLocation(programID, "lightPosition0");
+            uniform_lightPosition1 = GL.GetUniformLocation(programID, "lightPosition1");
+            uniform_lightPosition2 = GL.GetUniformLocation(programID, "lightPosition2");
+            uniform_lightPosition3 = GL.GetUniformLocation(programID, "lightPosition3");
             uniform_camPosition = GL.GetUniformLocation(programID, "cameraPosition");
         }
 

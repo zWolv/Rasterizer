@@ -6,7 +6,7 @@ in vec2 uv;						// interpolated texture coordinates
 uniform sampler2D pixels;		// input texture (1st pass render target)
 uniform sampler2D lut;          // look up table texture
 void vignetteEffect(), chromaticAberrationEffect(), ColorGradingApply(), FindSizes(float textureSize); // different post processing effects
-bool vignette = true, chromaticAberration = false, colorGrading = true;
+bool vignette = false, chromaticAberration = false, colorGrading = false;
 
 float size, sizeRoot;
 
@@ -46,9 +46,9 @@ void vignetteEffect()
 void chromaticAberrationEffect()
 {
     vec3 newColor;
-    newColor.r = texture( pixels, new vec2(uv.x - 0.01, uv.y + 0.01) ).r;
-    newColor.g = texture( pixels, new vec2(uv.x + 0.01, uv.y - 0.01) ).g;
-    newColor.b = texture( pixels, new vec2(uv.x - 0.01, uv.y + 0.01) ).b;
+    newColor.r = texture( pixels, vec2(uv.x - 0.01, uv.y + 0.01) ).r;
+    newColor.g = texture( pixels, vec2(uv.x + 0.01, uv.y - 0.01) ).g;
+    newColor.b = texture( pixels, vec2(uv.x - 0.01, uv.y + 0.01) ).b;
 
 //    outputColor *= newColor;
     outputColor = mix(outputColor, newColor, 0.5);
