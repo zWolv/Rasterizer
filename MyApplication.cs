@@ -233,9 +233,6 @@ namespace Template
                 if (keyboard[Keys.B])
                     lightData[selectedLight].Intensity.Z++;
             }
-
-
-
         }
     }
 }
