@@ -5,8 +5,11 @@ in vec2 P;						// fragment position in screen space
 in vec2 uv;						// interpolated texture coordinates
 uniform sampler2D pixels;		// input texture (1st pass render target)
 uniform sampler2D lut;          // look up table texture
-void vignetteEffect(), chromaticAberrationEffect(), ColorGradingApply(), FindSizes(float textureSize); // different post processing effects
-bool vignette = false, chromaticAberration = false, colorGrading = false;
+void vignetteEffect(), BlurEffect(float sigma, int kernelWidth); // different post processing effects
+void FindSizes(float textureSize);
+vec4 ColorGradingApply(vec2 uv), chromaticAberrationEffect(vec2 uv), BlurPixel(float middleComponent, vec2 uv, float uvComponent, float sigma);
+bool vignette = true, chromaticAberration = false, blur = false, colorGrading = true;
+layout(location = 0) out vec4 fragColor;
 
 float size, sizeRoot;
 
@@ -21,10 +24,13 @@ void main()
     FindSizes(textureSize(lut,0).x);
 
     if (colorGrading)
-        ColorGradingApply();
+        outputColor = ColorGradingApply(uv).rgb;
 
     if (chromaticAberration)
-        chromaticAberrationEffect();
+        outputColor = chromaticAberrationEffect(uv).rgb;
+
+    if (blur)
+        BlurEffect(2.0, 1);
     
     if (vignette)
         vignetteEffect();
@@ -43,18 +49,27 @@ void vignetteEffect()
     outputColor *= vignette;
 }
 
-void chromaticAberrationEffect()
+vec4 chromaticAberrationEffect(vec2 uv)
 {
-    vec3 newColor;
-    newColor.r = texture( pixels, vec2(uv.x - 0.01, uv.y + 0.01) ).r;
-    newColor.g = texture( pixels, vec2(uv.x + 0.01, uv.y - 0.01) ).g;
-    newColor.b = texture( pixels, vec2(uv.x - 0.01, uv.y + 0.01) ).b;
+    vec4 newColor;
 
-//    outputColor *= newColor;
-    outputColor = mix(outputColor, newColor, 0.5);
+    if(!colorGrading)
+    {
+    newColor.r = texture( pixels, vec2(uv.x - 0.003, uv.y + 0.003) ).r;
+    newColor.g = texture( pixels, vec2(uv.x + 0.003, uv.y - 0.003) ).g;
+    newColor.b = texture( pixels, vec2(uv.x - 0.003, uv.y + 0.003) ).b;
+    }
+    else if (colorGrading)
+    {
+        newColor.r = (ColorGradingApply(vec2(uv.x-0.003, uv.y+0.003))).r;
+        newColor.g = (ColorGradingApply(vec2(uv.x+0.003, uv.y-0.003))).g;
+        newColor.b = (ColorGradingApply(vec2(uv.x-0.003, uv.y+0.003))).b;
+    }
+
+    return newColor;
 }
 
-void ColorGradingApply()
+vec4 ColorGradingApply(vec2 uv)
 {   
     vec4 tempColor = vec4((texture( pixels, uv ).rgb),0);
     
@@ -102,7 +117,7 @@ void ColorGradingApply()
     
     result = mix(result, result2, 0.5);
 
-    outputColor = result.rgb;
+    return result;
 }
 
 void FindSizes(float textureSize)
@@ -118,5 +133,46 @@ void FindSizes(float textureSize)
         sizeRoot = 8;
     }
 }
+
+void BlurEffect(float sigma, int kernelWidth) 
+{
+    vec2 middle = uv;
+    vec4 blur = vec4(0,0,0,0);
+
+    for(float i = -0.01 * kernelWidth; i < 0.01 + 0.01 * kernelWidth; i += 0.01)
+        blur += BlurPixel(middle.x, vec2(uv.x + i, uv.y), uv.x + i, sigma);
+    
+    for(float i = -0.01 * kernelWidth; i < 0.01 + 0.01 * kernelWidth; i += 0.01)
+        blur += BlurPixel(middle.y, vec2(uv.x, uv.y + i), uv.y + i, sigma);
+    normalize(blur);
+
+    outputColor = blur.rgb;
+}
+
+vec4 BlurPixel(float middleComponent, vec2 uv, float uvComponent, float sigma)
+{
+    #define PI 3.1415926538
+    
+    float num = pow(uvComponent - middleComponent, 2);
+    float denum = 2 * (sigma * sigma);
+    float div = -(num/denum);
+
+    float e = pow(exp(1.0), div);
+    float root = sqrt(2 * PI * pow(sigma,2));
+
+    float result = 1 / root * e;
+
+    vec4 pixel;
+    if (colorGrading && !chromaticAberration)
+        pixel = ColorGradingApply(uv);
+    else if (chromaticAberration)
+        pixel = chromaticAberrationEffect(uv);
+    else
+        pixel = texture(pixels,uv);
+
+    return pixel * result;
+}
+
+
 
 // EOF
