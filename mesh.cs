@@ -31,7 +31,7 @@ namespace Template
             this.scale = scale;
             this.rotation = rotation;
             this.translation = translation;
-            modelMatrix = scale * rotation * translation * worldCenter;
+            modelMatrix =  rotation * translation * scale * worldCenter;
         }
 
         // initialization; called during first render

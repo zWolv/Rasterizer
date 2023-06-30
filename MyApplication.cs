@@ -13,7 +13,7 @@ namespace Template
     {
         // MEMBER VARIABLES
         public Surface screen;                  // background surface for printing etc.
-        Mesh? mesh, floor, mesh2;                      // a mesh to draw using OpenGL                          // teapot rotation angle
+        Mesh? mesh, floor, mesh2, rotated;                      // a mesh to draw using OpenGL                          // teapot rotation angle
         readonly Stopwatch timer = new();       // timer for measuring frame duration
         RenderTarget? target;                   // intermediate render target
         ScreenQuad? quad;                       // screen filling quad for post processing
@@ -22,7 +22,7 @@ namespace Template
         Camera camera;
         public static Light[] lightData;
         public static Vector3 ambientLight;
-        private int light = 20;
+        private int light = 10;
         private int selectedLight;
 
         private int prevheight;
@@ -49,20 +49,22 @@ namespace Template
         {
             
             // load teapot and floor
-            mesh = new Mesh("../../../assets/teapot.obj", Matrix4.CreateScale(1f), Matrix4.CreateRotationX(MathHelper.DegreesToRadians(45)), Matrix4.CreateTranslation(20, 0, 20));
+            mesh = new Mesh("../../../assets/teapot.obj", Matrix4.CreateScale(1f), Matrix4.Identity, Matrix4.Identity);
             floor = new Mesh("../../../assets/floor.obj", Matrix4.CreateScale(4f), Matrix4.Identity, Matrix4.Identity);
-            mesh2 = new Mesh("../../../assets/teapot.obj", Matrix4.CreateScale(0.5f), Matrix4.CreateRotationX(MathHelper.DegreesToRadians(-45)), Matrix4.CreateTranslation(0, 10, 0));
+            mesh2 = new Mesh("../../../assets/teapot.obj", Matrix4.CreateScale(0.5f), Matrix4.Identity, Matrix4.CreateTranslation(0, 15, 0));
+            rotated = new Mesh("../../../assets/floor.obj", Matrix4.CreateScale(0.5f), Matrix4.CreateRotationX(MathHelper.DegreesToRadians(45)), Matrix4.CreateTranslation(0,30,0));
 
             // add the teapot and floor to the world
             sceneGraph.AddWorldObject(mesh);
             sceneGraph.AddWorldObject(floor);
             sceneGraph.AddWorldObjectToObject(mesh2, mesh);
+            sceneGraph.AddWorldObjectToObject(rotated, mesh);
 
             // add the lights to the world
-            sceneGraph.AddWorldObject(new Light(new Vector3(0, 4, 5), new Vector3(255, 255, 255)));
-            sceneGraph.AddWorldObject(new Light(new Vector3(0, 7, 9), new Vector3(0, 255, 0)));
-            sceneGraph.AddWorldObject(new Light(new Vector3(0, 5, 6), new Vector3(0, 0, 255)));
-            sceneGraph.AddWorldObject(new Light(new Vector3(0, 4, 2), new Vector3(255, 0, 0)));
+            sceneGraph.AddWorldObject(new Light(new Vector3(-7, 5, 0), new Vector3(255, 255, 255)));
+            sceneGraph.AddWorldObject(new Light(new Vector3(0, 7, 5), new Vector3(0, 255, 0)));
+            sceneGraph.AddWorldObject(new Light(new Vector3(0, 5, 5), new Vector3(0, 0, 255)));
+            sceneGraph.AddWorldObject(new Light(new Vector3(7, 5, 0), new Vector3(255, 0, 0)));
 
             // initialize stopwatch
             timer.Reset();

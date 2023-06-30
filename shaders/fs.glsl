@@ -32,7 +32,10 @@ void main()
     vec3 R1 = normalize(lightToPos1 - 2 * (dot(lightToPos1,normal.xyz) * normal.xyz));
     vec3 V1 = normalize(cameraPosition - lightPosition1);
     float attenuation1 = 1.0 / dot(L1,L1);                                          // distance attenuation
-    float NdotL1 = max(1, dot(normalize(normal.xyz), normalize(L1)));               // incoming angle attenuation                     
+    float NdotL1 = max(1, dot(normalize(normal.xyz), normalize(L1)));
+    vec3 lightDistanceCorrected1 = lightColor1 * attenuation1;                     
+    float RdotV1 = max(1, pow(dot(R1,V1),n));
+    temp += vec4(lightDistanceCorrected1 * (diffuseColor * NdotL1 + glossyColor * RdotV1), 1.0); // incoming angle attenuation                     
 
     vec3 L2 = lightPosition2 - position.xyz;                                        // vector from surface to light, unnormalized!
     vec3 lightToPos2 = position.xyz - lightPosition2;
