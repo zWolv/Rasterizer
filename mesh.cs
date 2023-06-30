@@ -18,12 +18,20 @@ namespace Template
         int quadBufferId;                       // quad buffer (not in Modern OpenGL)
         public Matrix4 modelMatrix;
         public Matrix4 objectToWorld;
+        public Matrix4 scale = Matrix4.Identity;
+        public Matrix4 rotation = Matrix4.Identity;
+        public Matrix4 translation = Matrix4.Identity;
+        private static Matrix4 worldCenter = Matrix4.CreateFromAxisAngle(new Vector3(0, 1, 0), 0);
 
         // constructor
-        public Mesh(string fileName)
+        public Mesh(string fileName, Matrix4 scale, Matrix4 rotation, Matrix4 translation)
         {
             MeshLoader loader = new();
             loader.Load(this, fileName);
+            this.scale = scale;
+            this.rotation = rotation;
+            this.translation = translation;
+            modelMatrix = scale * rotation * translation * worldCenter;
         }
 
         // initialization; called during first render

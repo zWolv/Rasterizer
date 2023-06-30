@@ -11,7 +11,6 @@ namespace Rasterizer
         private Texture wood;
         private Shader postProcess;
         private Texture lut;
-
         public Shader Shader { get { return shader; } }
         public Texture Wood { get { return wood; } }
         public Shader PostProcess { get { return postProcess; } }
@@ -89,7 +88,7 @@ namespace Rasterizer
             }
         }
 
-        // render each node not directly under the world node and its children
+        // render each node and its children
         public void ProcessNode(Matrix4 worldToScreen, Node node, Camera camera)
         {
             // render the mesh if the node contains a mesh. Lights don't need to be rendered.
@@ -100,7 +99,7 @@ namespace Rasterizer
 
             Mesh? mesh = node.Data as Mesh;
             Matrix4 view = Matrix4.CreatePerspectiveFieldOfView(1.2f, (float)OpenTKApp.screen.width/(float)OpenTKApp.screen.height, .1f, 1000);
-            Matrix4 transform = mesh.objectToWorld * worldToScreen * view;
+            Matrix4 transform =  mesh.objectToWorld * worldToScreen * view;
 
             mesh?.Render(shader, transform, wood, camera);
 

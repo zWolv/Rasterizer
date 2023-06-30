@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Numerics;
+using System.Text.Encodings.Web;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using Rasterizer;
@@ -12,7 +13,7 @@ namespace Template
     {
         // MEMBER VARIABLES
         public Surface screen;                  // background surface for printing etc.
-        Mesh? mesh, floor;                      // a mesh to draw using OpenGL                          // teapot rotation angle
+        Mesh? mesh, floor, mesh2;                      // a mesh to draw using OpenGL                          // teapot rotation angle
         readonly Stopwatch timer = new();       // timer for measuring frame duration
         RenderTarget? target;                   // intermediate render target
         ScreenQuad? quad;                       // screen filling quad for post processing
@@ -24,6 +25,9 @@ namespace Template
         private int light = 20;
         private int selectedLight;
 
+        private int prevheight;
+        private int prevwidth;
+
         // CONSTRUCTOR
         public MyApplication(Surface screen)
         {
@@ -33,7 +37,10 @@ namespace Template
             this.screen = screen;
             lightData = new Light[4];
             camera = new Camera(new Vector3(0, 3, -14.5f), new Vector3(2, 1, 3), new Vector3(1, 0, 0), new Vector3(0, 1, 0));
+            prevheight = screen.height;
+            prevwidth = screen.width;
         }
+
 
         // CLASS METHODS
 
@@ -42,18 +49,14 @@ namespace Template
         {
             
             // load teapot and floor
-            mesh = new Mesh("../../../assets/teapot.obj");
-            floor = new Mesh("../../../assets/floor.obj");
-            
-            
-            Matrix4 Tpot = Matrix4.CreateScale(0.5f) * Matrix4.CreateFromAxisAngle(new Vector3(0, 1, 0), 0);
-            Matrix4 Tfloor = Matrix4.CreateScale(4.0f) * Matrix4.CreateFromAxisAngle(new Vector3(0, 1, 0), 0);
+            mesh = new Mesh("../../../assets/teapot.obj", Matrix4.CreateScale(1f), Matrix4.CreateRotationX(MathHelper.DegreesToRadians(45)), Matrix4.CreateTranslation(20, 0, 20));
+            floor = new Mesh("../../../assets/floor.obj", Matrix4.CreateScale(4f), Matrix4.Identity, Matrix4.Identity);
+            mesh2 = new Mesh("../../../assets/teapot.obj", Matrix4.CreateScale(0.5f), Matrix4.CreateRotationX(MathHelper.DegreesToRadians(-45)), Matrix4.CreateTranslation(0, 10, 0));
 
-            floor.modelMatrix = Tfloor;
-            mesh.modelMatrix = Tpot;
             // add the teapot and floor to the world
             sceneGraph.AddWorldObject(mesh);
             sceneGraph.AddWorldObject(floor);
+            sceneGraph.AddWorldObjectToObject(mesh2, mesh);
 
             // add the lights to the world
             sceneGraph.AddWorldObject(new Light(new Vector3(0, 4, 5), new Vector3(255, 255, 255)));
@@ -63,7 +66,7 @@ namespace Template
 
             // initialize stopwatch
             timer.Reset();
-            timer.Start();
+            timer.Start(); 
 
             // create the render target
             if (useRenderTarget) target = new RenderTarget(screen.width, screen.height);
@@ -75,11 +78,13 @@ namespace Template
         public void Tick()
         {
             screen.Clear(0);
-            screen.Print("Camera = " + camera.position, 0, 20, 255);
+            
             KeyboardInput(OpenTKApp.keyboard);
             screen = OpenTKApp.screen;
-            if (useRenderTarget) 
+            if (useRenderTarget && (prevheight != screen.height || prevwidth != screen.width)) 
                 target = new RenderTarget(screen.width, screen.height);
+            prevheight = screen.height;
+            prevwidth = screen.width;
         }
 
         // tick for OpenGL rendering code
@@ -118,8 +123,11 @@ namespace Template
             }
         }
 
+        // handle all keyboard input
         public void KeyboardInput(KeyboardState keyboard)
         {
+
+            // moving the camera
             if (keyboard[Keys.E])
                 camera.position += camera.upDirection;
             if (keyboard[Keys.Q])
@@ -133,6 +141,7 @@ namespace Template
             if (keyboard[Keys.D])
                 camera.position -= camera.rightDirection;
 
+            // rotating the camera
             if (keyboard[Keys.Up])
             {
                 camera.pitch += 2;
@@ -168,6 +177,7 @@ namespace Template
                 camera.UpdateUpDirection();
             }
 
+            // changing texture for color grading
             if (keyboard[Keys.F1])
                 sceneGraph.LUT = new Texture("../../../assets/luts/lut0.png");
             if (keyboard[Keys.F2])
@@ -189,6 +199,7 @@ namespace Template
             if (keyboard[Keys.F10])
                 sceneGraph.LUT = new Texture("../../../assets/luts/lut9.png");
 
+            // cycle through lights
             if (keyboard[Keys.P])
             {
                 selectedLight++;
@@ -198,6 +209,7 @@ namespace Template
                 }
             }
 
+            // move selected light
             if (keyboard[Keys.L])
             {
                 lightData[selectedLight].Position.X += 0.5f;
@@ -223,6 +235,7 @@ namespace Template
                 lightData[selectedLight].Position.Y -= 0.5f;
             }
 
+            // change color of selected light
             if (keyboard[Keys.LeftShift])
             {
                 if (keyboard[Keys.R])
