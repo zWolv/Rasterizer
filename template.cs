@@ -36,11 +36,12 @@ namespace Template
         Shader screenShader;
 
         internal static KeyboardState keyboard;
+        internal static Surface screen;
 
         public OpenTKApp()
             : base(GameWindowSettings.Default, new NativeWindowSettings()
             {
-                Size = new Vector2i(640, 400),
+                Size = new Vector2i(1600, 900),
                 Profile = allowPrehistoricOpenGL ? ContextProfile.Compatability : ContextProfile.Core,  // required for fixed-function, which is probably not supported on MacOS
             })
         {
@@ -52,7 +53,7 @@ namespace Template
             // called during application initialization
             GL.ClearColor(0, 0, 0, 0);
             GL.Disable(EnableCap.DepthTest);
-            Surface screen = new(ClientSize.X, ClientSize.Y);
+            screen = new(ClientSize.X, ClientSize.Y);
             app = new MyApplication(screen);
             screenID = app.screen.GenTexture();
             if(allowPrehistoricOpenGL)
@@ -78,6 +79,7 @@ namespace Template
             base.OnResize(e);
             // called upon window resize. Note: does not change the size of the pixel buffer.
             GL.Viewport(0, 0, ClientSize.X, ClientSize.Y);
+            screen = new(ClientSize.X, ClientSize.Y);
             if (allowPrehistoricOpenGL)
             {
                 GL.MatrixMode(MatrixMode.Projection);

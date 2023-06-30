@@ -32,7 +32,7 @@ namespace Template
             sceneGraph = new SceneGraph();
             this.screen = screen;
             lightData = new Light[4];
-            camera = new Camera(new Vector3(0, 3, -14.5f), new Vector3(0, 0, 1), new Vector3(1, 0, 0), new Vector3(0, 1, 0));
+            camera = new Camera(new Vector3(0, 3, -14.5f), new Vector3(2, 1, 3), new Vector3(1, 0, 0), new Vector3(0, 1, 0));
         }
 
         // CLASS METHODS
@@ -68,7 +68,7 @@ namespace Template
             // create the render target
             if (useRenderTarget) target = new RenderTarget(screen.width, screen.height);
                 quad = new ScreenQuad();
-                camera.UpdateFrontDirection();
+            camera.UpdateFrontDirection();
         }
 
         // tick for background surface
@@ -77,6 +77,9 @@ namespace Template
             screen.Clear(0);
             screen.Print("Camera = " + camera.position, 0, 20, 255);
             KeyboardInput(OpenTKApp.keyboard);
+            screen = OpenTKApp.screen;
+            if (useRenderTarget) 
+                target = new RenderTarget(screen.width, screen.height);
         }
 
         // tick for OpenGL rendering code
