@@ -5,17 +5,19 @@ namespace Rasterizer
 {
     public class SceneGraph
     {
+        // MEMBER VARIABLES
         private Node world;
-        Shader shader;
-        Texture wood;
-        Shader postProcess;
-        Texture lut;
+        private Shader shader;
+        private Texture wood;
+        private Shader postProcess;
+        private Texture lut;
 
         public Shader Shader { get { return shader; } }
         public Texture Wood { get { return wood; } }
         public Shader PostProcess { get { return postProcess; } }
         public Texture LUT { get { return lut; } set { lut = value; } }
 
+        // CONSTRUCTOR
         public SceneGraph()
         {
             world = new Node(null!);
@@ -25,18 +27,23 @@ namespace Rasterizer
             lut = new Texture("../../../assets/luts/lut0.png");
         }
 
+        // CLASS METHODS
+
+        // add an object directly to the world node
         public void AddWorldObject(WorldObject mesh)
         {
             world.AddChild(mesh);
         }
 
+        // add an object to another object as a child
         public void AddWorldObjectToObject(WorldObject mesh, WorldObject parent)
         {
-            var parentNode = FindMeshNode(parent);
+            var parentNode = FindWorldObjectNode(parent);
             parentNode.AddChild(mesh);
         }
 
-        Node FindMeshNode(WorldObject mesh, Node next = null!)
+        // find a specific world object in the tree
+        Node FindWorldObjectNode(WorldObject mesh, Node next = null!)
         {
             if (world.Children.Count != 0 && next == null)
             {
@@ -48,7 +55,7 @@ namespace Rasterizer
                     }
                     else
                     {
-                        return FindMeshNode(mesh, child);
+                        return FindWorldObjectNode(mesh, child);
                     }
                 }
             }
@@ -62,13 +69,14 @@ namespace Rasterizer
                     }
                     else
                     {
-                        return FindMeshNode(mesh, child);
+                        return FindWorldObjectNode(mesh, child);
                     }
                 }
             }
             return null!;
         }
 
+        // render from the world node as start point
         public void Render(Matrix4 worldToScreen, Camera camera)
         {
             if(world.Children.Count != 0) 
@@ -81,6 +89,7 @@ namespace Rasterizer
             }
         }
 
+        // render each node not directly under the world node and its children
         public void ProcessNode(Matrix4 worldToScreen, Node node, Camera camera)
         {
             // render the mesh if the node contains a mesh. Lights don't need to be rendered.
@@ -109,6 +118,7 @@ namespace Rasterizer
 
     public class Node
     {
+        // MEMBER VARIABLES
         private Node parent;
         public Node Parent { get { return parent; } }
         private WorldObject data;
@@ -118,13 +128,17 @@ namespace Rasterizer
         private List<Node> children = new List<Node>();
 
         public List<Node> Children { get { return children; } }
-
+        
+        // CONSTRUCTOR
         public Node(WorldObject data, Node parent = null!)
         {
             this.parent = parent;
             this.data = data;
         }
 
+        // CLASS METHODS
+
+        // add a child to this node
         public void AddChild(WorldObject mesh)
         {
             var node = new Node(mesh, this);
@@ -136,6 +150,7 @@ namespace Rasterizer
             
         }
 
+        // calculate the relative modelmatrix of this mesh in relation to the world node
         public Matrix4 CalculateRelativeModelMatrix()
         {
             Matrix4 result = Matrix4.Identity;

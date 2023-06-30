@@ -4,9 +4,11 @@ namespace Rasterizer
 {
     public class Camera
     {
+        // MEMBER VARIABLES
         public Vector3 position, frontDirection, rightDirection, upDirection;
         public float pitch = 0, yaw = 0;
 
+        // CONSTRUCTOR
         public Camera(Vector3 position, Vector3 frontDirection, Vector3 rightDirection, Vector3 upDirection) 
         {
             this.position = position;
@@ -15,6 +17,9 @@ namespace Rasterizer
             this.upDirection = upDirection;
         }
 
+        // CLASS METHODS
+
+        // update the direction the camera is looking at
         public void UpdateFrontDirection()
         {
             frontDirection.X = (float)Math.Cos(MathHelper.DegreesToRadians(pitch)) * (float)-Math.Sin(MathHelper.DegreesToRadians(yaw));
@@ -23,6 +28,7 @@ namespace Rasterizer
             frontDirection.Normalize();
         }
 
+        // update the right direction of the camera
         public void UpdateRightDirection()
         {
             rightDirection.X = (float)-Math.Cos(MathHelper.DegreesToRadians(yaw));
@@ -31,6 +37,7 @@ namespace Rasterizer
             rightDirection.Normalize();
         }
 
+        // update the vertical direction of the camera
         public void UpdateUpDirection()
         {
             upDirection = Vector3.Cross(frontDirection, rightDirection);

@@ -10,7 +10,7 @@ namespace Template
 {
     class MyApplication
     {
-        // member variables
+        // MEMBER VARIABLES
         public Surface screen;                  // background surface for printing etc.
         Mesh? mesh, floor;                      // a mesh to draw using OpenGL                          // teapot rotation angle
         readonly Stopwatch timer = new();       // timer for measuring frame duration
@@ -24,7 +24,7 @@ namespace Template
         private int light = 20;
         private int selectedLight;
 
-        // constructor
+        // CONSTRUCTOR
         public MyApplication(Surface screen)
         {
             float temp = (float)this.light / 255;
@@ -35,11 +35,13 @@ namespace Template
             camera = new Camera(new Vector3(0, 3, -14.5f), new Vector3(0, 0, 1), new Vector3(1, 0, 0), new Vector3(0, 1, 0));
         }
 
+        // CLASS METHODS
+
         // initialize
         public void Init()
         {
             
-            // load teapot
+            // load teapot and floor
             mesh = new Mesh("../../../assets/teapot.obj");
             floor = new Mesh("../../../assets/floor.obj");
             
@@ -49,16 +51,20 @@ namespace Template
 
             floor.modelMatrix = Tfloor;
             mesh.modelMatrix = Tpot;
-
+            // add the teapot and floor to the world
             sceneGraph.AddWorldObject(mesh);
             sceneGraph.AddWorldObject(floor);
+
+            // add the lights to the world
             sceneGraph.AddWorldObject(new Light(new Vector3(0, 4, 5), new Vector3(255, 255, 255)));
             sceneGraph.AddWorldObject(new Light(new Vector3(0, 7, 9), new Vector3(0, 255, 0)));
             sceneGraph.AddWorldObject(new Light(new Vector3(0, 5, 6), new Vector3(0, 0, 255)));
             sceneGraph.AddWorldObject(new Light(new Vector3(0, 4, 2), new Vector3(255, 0, 0)));
+
             // initialize stopwatch
             timer.Reset();
             timer.Start();
+
             // create the render target
             if (useRenderTarget) target = new RenderTarget(screen.width, screen.height);
                 quad = new ScreenQuad();
@@ -69,8 +75,7 @@ namespace Template
         public void Tick()
         {
             screen.Clear(0);
-            //screen.Print("hello world", 2, 2, 0xffff00);
-
+            screen.Print("Camera = " + camera.position, 0, 20, 255);
             KeyboardInput(OpenTKApp.keyboard);
         }
 
